@@ -45,19 +45,33 @@
   </div>
 </template>
 <script>
+import Vue from 'vue'
+import { CONFIG } from './../../config'
+
 export default {
   name: 'login',
   data: function () {
     return {
       user: {
         username: '',
-        password: 11
+        password: ''
       }
     }
   },
   methods: {
     login: function () {
-      console.log(this.user)
+      let data = {
+        grant_type: 'password',
+        client_id: CONFIG.client_id,
+        client_secret: CONFIG.client_secret,
+        username: this.user.username,
+        password: this.user.password,
+        scope: ''
+      }
+      Vue.http.post('oauth/token', data).then(res => {
+        localStorage['token'] = JSON.stringify(res.body)
+        this.$router.push('/contas')
+      })
     }
   }
 }
